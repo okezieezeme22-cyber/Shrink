@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shrink: compress images and PDFs in your browser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+<div class="shell collapsed" id="shell">
+  <aside class="sidebar" id="sidebar" aria-label="Shrink tools">
+    <div class="sb-head">
+      <div class="logo">S</div>
+      <span class="brand">Shrink</span>
+      <button class="sb-close" id="sbClose" type="button" aria-label="Close menu"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
+    </div>
+    <nav class="sb-body">
+      <div class="group-label">Compress</div>
+      <ul class="nav">
+        <li><button type="button" class="nav-btn" data-section="image" title="Images"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/></svg><span class="nav-label">Images</span><span class="badge" data-count="image"></span></button></li>
+        <li><button type="button" class="nav-btn" data-section="video" title="Videos"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="m16 13 5.2 3.5a.5.5 0 0 0 .8-.4V7.9a.5.5 0 0 0-.8-.4L16 11"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg><span class="nav-label">Videos</span><span class="badge" data-count="video"></span></button></li>
+        <li><button type="button" class="nav-btn" data-section="pdf" title="PDFs"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg><span class="nav-label">PDFs</span><span class="badge" data-count="pdf"></span></button></li>
+        <li><button type="button" class="nav-btn" data-section="document" title="Documents"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg><span class="nav-label">Documents</span><span class="badge" data-count="document"></span></button></li>
+      </ul>
+      <div class="group-label" style="margin-top:12px">Create</div>
+      <ul class="nav">
+        <li><button type="button" class="nav-btn" data-section="qr" title="QR Code"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M20 20v.01M17 20h3v-3"/></svg><span class="nav-label">QR Code</span><span class="badge" data-count="qr"></span></button></li>
+      </ul>
+    </nav>
+    <div class="sb-foot">
+      <button class="nav-btn" id="themeToggle" type="button" title="Toggle theme"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg><span class="nav-label">Toggle theme</span></button>
+      <div class="foot-text">Design &amp; build: Okezie</div>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="trigger" id="sbTrigger" type="button" aria-label="Toggle sidebar"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M9 3v18"/></svg></button>
+      <div class="vr"></div>
+      <span class="crumb" id="crumb">Images</span>
+    </header>
+
+    <main class="content">
+      <h1 class="page-title" id="pageTitle">Compress images</h1>
+      <p class="page-desc" id="pageDesc"></p>
+
+      <div class="panel controls" id="mainControls">
+        <div class="control" data-for="image pdf document">
+          <div class="row"><label for="quality">Quality</label><span class="value" id="qualityValue">75%</span></div>
+          <input type="range" id="quality" min="10" max="95" step="5" value="75">
+        </div>
+        <div class="control" data-for="pdf">
+          <div class="row"><label for="resolution">PDF resolution</label></div>
+          <select id="resolution"><option value="1.3">Standard</option><option value="2">High</option></select>
+        </div>
+        <div class="control" data-for="image document">
+          <label class="checkline"><input type="checkbox" id="limitWidth"> Limit image width to 1920px</label>
+        </div>
+        <div class="control-group" id="videoControls" data-for="video">
+          <div class="control"><label for="vBitrate">Video quality</label>
+            <select id="vBitrate"><option value="2">Low (~2 Mbps)</option><option value="4" selected>Medium (~4 Mbps)</option><option value="8">High (~8 Mbps)</option></select></div>
+          <div class="control"><label for="vMaxDim">Max resolution</label>
+            <select id="vMaxDim"><option value="0">Original</option><option value="1920" selected>1080p</option><option value="1280">720p</option></select></div>
+          <div class="control"><label for="vFps">Max frame rate</label>
+            <select id="vFps"><option value="0">Keep</option><option value="30">30 fps</option><option value="24">24 fps</option></select></div>
+        </div>
+      </div>
+
+      <div class="qr-panel" id="qrPanel" hidden>
+        <div>
+          <div class="panel qr-card">
+            <h2>1. Content</h2>
+            <div class="tabs" id="qrTabs">
+              <button type="button" class="tab active" data-type="text">Link / Text</button>
+              <button type="button" class="tab" data-type="email">Email</button>
+              <button type="button" class="tab" data-type="phone">Phone</button>
+              <button type="button" class="tab" data-type="wifi">WiFi</button>
+            </div>
+            <div data-qtype="text"><div class="qr-field"><label for="qText">Link or text</label><textarea id="qText" placeholder="https://example.com"></textarea></div></div>
+            <div data-qtype="email" hidden>
+              <div class="qr-field"><label for="qEmail">Email address</label><input type="email" id="qEmail" placeholder="name@example.com"></div>
+              <div class="qr-field"><label for="qSubject">Subject (optional)</label><input type="text" id="qSubject"></div>
+              <div class="qr-field"><label for="qBody">Message (optional)</label><textarea id="qBody"></textarea></div>
+            </div>
+            <div data-qtype="phone" hidden><div class="qr-field"><label for="qPhone">Phone number</label><input type="tel" id="qPhone" placeholder="+234 801 234 5678"></div></div>
+            <div data-qtype="wifi" hidden>
+              <div class="qr-field"><label for="qSsid">Network name (SSID)</label><input type="text" id="qSsid"></div>
+              <div class="qr-field"><label for="qWifiPass">Password</label><input type="text" id="qWifiPass"></div>
+              <div class="qr-field"><label for="qWifiType">Security</label><select id="qWifiType"><option value="WPA">WPA/WPA2</option><option value="WEP">WEP</option><option value="nopass">None</option></select></div>
+            </div>
+          </div>
+
+          <div class="panel qr-card" style="margin-top:16px">
+            <h2>2. Colors</h2>
+            <div class="color-block">
+              <div class="color-head"><label>QR code color</label></div>
+              <div class="swatches"><button type="button" class="swatch" data-target="fg" data-color="#000000" style="background:#000000" aria-label="#000000"></button><button type="button" class="swatch" data-target="fg" data-color="#1d4ed8" style="background:#1d4ed8" aria-label="#1d4ed8"></button><button type="button" class="swatch" data-target="fg" data-color="#16a34a" style="background:#16a34a" aria-label="#16a34a"></button><button type="button" class="swatch" data-target="fg" data-color="#dc2626" style="background:#dc2626" aria-label="#dc2626"></button><button type="button" class="swatch" data-target="fg" data-color="#7c3aed" style="background:#7c3aed" aria-label="#7c3aed"></button><button type="button" class="swatch" data-target="fg" data-color="#ea580c" style="background:#ea580c" aria-label="#ea580c"></button><button type="button" class="swatch" data-target="fg" data-color="#0f766e" style="background:#0f766e" aria-label="#0f766e"></button><button type="button" class="swatch" data-target="fg" data-color="#db2777" style="background:#db2777" aria-label="#db2777"></button></div>
+              <div class="color-inputs"><input type="color" id="fgPicker" value="#000000" aria-label="Pick QR code color"><input type="text" id="fgHex" value="#000000" maxlength="7" aria-label="QR code color hex"></div>
+            </div>
+            <div class="color-block" style="margin-bottom:6px">
+              <div class="color-head"><label>Background color</label></div>
+              <div class="swatches"><button type="button" class="swatch" data-target="bg" data-color="#ffffff" style="background:#ffffff" aria-label="#ffffff"></button><button type="button" class="swatch" data-target="bg" data-color="#f4f4f5" style="background:#f4f4f5" aria-label="#f4f4f5"></button><button type="button" class="swatch" data-target="bg" data-color="#fef9c3" style="background:#fef9c3" aria-label="#fef9c3"></button><button type="button" class="swatch" data-target="bg" data-color="#dbeafe" style="background:#dbeafe" aria-label="#dbeafe"></button><button type="button" class="swatch" data-target="bg" data-color="#dcfce7" style="background:#dcfce7" aria-label="#dcfce7"></button><button type="button" class="swatch" data-target="bg" data-color="#fce7f3" style="background:#fce7f3" aria-label="#fce7f3"></button><button type="button" class="swatch" data-target="bg" data-color="#18181b" style="background:#18181b" aria-label="#18181b"></button><button type="button" class="swatch" data-target="bg" data-color="#0b132b" style="background:#0b132b" aria-label="#0b132b"></button></div>
+              <div class="color-inputs"><input type="color" id="bgPicker" value="#ffffff" aria-label="Pick background color"><input type="text" id="bgHex" value="#FFFFFF" maxlength="7" aria-label="Background color hex"></div>
+            </div>
+            <div class="qr-warn" id="qrWarn"></div>
+          </div>
+
+          <div class="panel qr-card" style="margin-top:16px">
+            <h2>3. Options</h2>
+            <div class="two">
+              <div class="qr-field"><label for="qrEcc">Error correction</label>
+                <select id="qrEcc"><option value="L">Low (7%)</option><option value="M" selected>Medium (15%)</option><option value="Q">Quartile (25%)</option><option value="H">High (30%)</option></select></div>
+              <div class="qr-field"><div class="row"><label for="qrMargin">Margin</label><span class="value" id="qrMarginVal">4</span></div>
+                <input type="range" id="qrMargin" min="0" max="10" step="1" value="4"></div>
+            </div>
+            <div class="qr-field" style="margin-bottom:0"><div class="row"><label for="qrSize">Download size</label><span class="value" id="qrSizeVal">512px</span></div>
+              <input type="range" id="qrSize" min="128" max="2048" step="64" value="512"></div>
+          </div>
+        </div>
+        <div class="qr-preview-wrap">
+          <div class="qr-stage" id="qrStage"><canvas id="qrCanvas" hidden></canvas><div class="qr-empty" id="qrEmpty">Type something to generate your QR code.</div></div>
+          <div class="qr-actions"><button class="primary" id="qrPng" type="button" disabled>Download PNG</button><button class="icon" id="qrSvg" type="button" disabled>Download SVG</button></div>
+        </div>
+      </div>
+
+      <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-label="Choose files to compress">
+        <div class="dz-icon"><svg class="i" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg></div>
+        <div class="lead">Drop files here</div>
+        <div class="sub">or click to choose</div>
+        <div class="types" id="dzTypes"></div>
+        <input type="file" id="fileInput" multiple>
+      </div>
+
+      <div class="list" id="list">
+        <div class="list-empty" id="emptyMsg">No files yet. Add some above to see how much weight they lose.</div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fflate@0.8.2/umd/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/upng-js@2.1.0/UPNG.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mp4box@0.5.2/dist/mp4box.all.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mp4-muxer@5.1.2/build/mp4-muxer.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.4/dist/docx-preview.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
